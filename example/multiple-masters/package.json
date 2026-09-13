@@ -1,0 +1,16 @@
+{
+  "name": "chop-example-multiple-masters",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Executable CHOP-7 (No Multiple Masters) violation and fix, driven by vitest.",
+  "type": "module",
+  "scripts": {
+    "test": "vitest run",
+    "test:violation": "vitest run violation",
+    "test:fixed": "vitest run fixed"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.3",
+    "vitest": "^3.2.7"
+  }
+}
