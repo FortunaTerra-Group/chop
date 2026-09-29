@@ -57,10 +57,10 @@ The rules also do not say what *done* means before the agent starts. That is the
 Real, runnable violation-and-fix pairs, each with its own `RUN-*.md` showing actual executed
 output (see [CONTRIBUTING.md](./CONTRIBUTING.md) for what belongs here and why):
 
-- [`example/multiple-masters`](./example/multiple-masters) — CHOP rule 7, No Multiple Masters:
-  two services race to write the same field, and what a single owner looks like instead.
-- [`example/revocation-path`](./example/revocation-path) — the Revocation Path corollary to
-  CHOP rule 9, Transition Logging: a transition log proves an agent's actions were recorded, not
+- [`example/multiple-masters`](./example/multiple-masters): CHOP rule 7, No Multiple Masters.
+  Two services race to write the same field, and what a single owner looks like instead.
+- [`example/revocation-path`](./example/revocation-path): the Revocation Path corollary to
+  CHOP rule 9, Transition Logging. A transition log proves an agent's actions were recorded, not
   that they could be stopped.
 
 ## Adopting it
