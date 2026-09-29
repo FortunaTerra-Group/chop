@@ -1,0 +1,16 @@
+{
+  "name": "chop-example-revocation-path",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Executable Revocation Path (CHOP-9 addendum) violation and fix, driven by vitest.",
+  "type": "module",
+  "scripts": {
+    "test": "vitest run",
+    "test:violation": "vitest run violation",
+    "test:fixed": "vitest run fixed"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.3",
+    "vitest": "^3.2.7"
+  }
+}
