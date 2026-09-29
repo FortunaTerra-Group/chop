@@ -4,12 +4,12 @@ import { RunState, TransitionLogEntry } from './types';
 /**
  * VIOLATION (Revocation Path, the CHOP-9 addendum): the only bound on this
  * run is elapsed wall-clock time. Nothing here ever looks for an external
- * "stop now" signal while the child is running -- there is no on-demand
+ * "stop now" signal while the child is running: there is no on-demand
  * trigger of any kind, and the timeout's own kill is a plain SIGTERM with no
  * escalation. This mirrors the real nexus-daily-audit defect: a bare
  * `timeout "${AUDIT_CLAUDE_TIMEOUT}" "$CLAUDE_BIN" ...`, no `--kill-after`.
  *
- * The transition log below is CHOP-9 compliant on its own terms -- every
+ * The transition log below is CHOP-9 compliant on its own terms: every
  * entry carries before/after/actor/timestamp. That compliance is exactly
  * what makes this example worth having: the log proves the run was
  * *recorded* as stopped. It does not prove the process *stopped*.

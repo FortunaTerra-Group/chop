@@ -9,7 +9,7 @@ it in prose.
 
 ## The scenario
 
-A runner starts an unattended agent process that has live, real-world write access -- each
+A runner starts an unattended agent process that has live, real-world write access. Each
 line it appends to a shared ledger file stands in for one external side effect (a comment
 posted, a message sent, an email delivered). The agent occasionally misbehaves: mid-run, it
 stops responding to `SIGTERM`, the same as a real process stuck inside a slow or hung tool
@@ -19,22 +19,25 @@ call.
 elapses, the runner sends one `SIGTERM` and logs a `timed_out` transition. Nothing else ever
 checks for a "stop now" signal while the process is running, and the timeout's own kill never
 escalates past `SIGTERM`. [`fixed/`](./fixed) adds a `revoke()` action that is independent of
-the wall clock, signals the process's whole group, and escalates to `SIGKILL` -- and only
-records the transition once the process is *confirmed* dead.
+the wall clock, signals the process's whole group, and escalates to `SIGKILL`, only recording
+the transition once the process is *confirmed* dead. It also handles two edge cases a naive
+version of the fix misses: a process that already exited on its own (a real `kill()` throwing
+`ESRCH` must not become an uncaught error), and two revoke attempts landing at the same time
+(an in-flight guard keeps them from both running the kill sequence at once).
 
 ## Which rule this demonstrates
 
 Primarily **CHOP rule 9, Transition Logging**, extended by a corollary this example is meant to
 motivate: *a transition log proves an agent's actions were recorded, not that they could be
 stopped.* Any agent with live external-write access needs an independently-tested revocation
-path -- a mechanism a real test proves actually terminates the process -- not merely a
+path: a mechanism a real test proves actually terminates the process, not merely a
 wall-clock timeout, because a timeout fires on duration, never on behavior. (At FortunaTerra
 this corollary is written down as a binding addendum to rule 9; CHOP.md itself states only the
 base rule, and this example demonstrates the gap the addendum exists to close.)
 
 The violation example is built specifically to keep CHOP rule 9 itself satisfied: every
 transition, including the `timed_out` one, is logged with `before`, `after`, `actor`, and
-`timestamp`. That is what makes it worth showing -- a diff that passes a CHOP-9 checklist can
+`timestamp`. That is what makes it worth showing: a diff that passes a CHOP-9 checklist can
 still leave an unattended agent with live write access running.
 
 This example is an original toy scenario built to demonstrate that class, not a transcription

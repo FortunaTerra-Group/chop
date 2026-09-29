@@ -40,7 +40,7 @@ describe('Revocation Path violation: a wall-clock-only timeout is not a revocati
   });
 
   afterEach(() => {
-    // Test cleanup only -- SIGKILL is not something WallClockOnlyRunner's own
+    // Test cleanup only. SIGKILL is not something WallClockOnlyRunner's own
     // API exposes anywhere. That missing capability is the point being
     // demonstrated; this call exists so the suite does not leak processes.
     const pid = runner.getPid();
@@ -81,7 +81,7 @@ describe('Revocation Path violation: a wall-clock-only timeout is not a revocati
     const writesLater = countLines(ledgerPath);
 
     // A working revocation path would have stopped the ledger from growing
-    // once the run was logged as ended. Here it keeps growing -- real
+    // once the run was logged as ended. Here it keeps growing: real
     // external side effects (each line stands in for one live write: a
     // GitHub comment, a Discord message, an email) that the logged
     // 'timed_out' transition did nothing to prevent.

@@ -61,7 +61,7 @@ describe('Revocation Path fix: RevocableRunner terminates on demand, independent
     const result = await runner.revoke('operator requested stop');
 
     expect(result.revoked).toBe(true);
-    // Confirmed dead, not merely "kill() was called" -- the same distinction
+    // Confirmed dead, not merely "kill() was called": the same distinction
     // the violation example fails to make.
     expect(isAlive(pid)).toBe(false);
   });
@@ -108,5 +108,40 @@ describe('Revocation Path fix: RevocableRunner terminates on demand, independent
 
     const result = await runner.revoke('second revoke, run already ended');
     expect(result).toMatchObject({ revoked: false });
+  });
+
+  it('handles two truly concurrent revoke() calls without either throwing, killing the process exactly once', async () => {
+    runner.start(SCRIPT_PATH, ledgerPath, 20, 999_000, true);
+    const pid = runner.getPid()!;
+    await sleep(150);
+
+    // Both calls read state === 'running' before either has a chance to
+    // finish: this is the race the sequential test above cannot exercise,
+    // since there state has already changed to 'revoked' by the time the
+    // second call starts.
+    const [first, second] = await Promise.all([
+      runner.revoke('racer A'),
+      runner.revoke('racer B'),
+    ]);
+
+    const outcomes = [first.revoked, second.revoked].sort();
+    expect(outcomes).toEqual([false, true]);
+    expect(isAlive(pid)).toBe(false);
+    expect(runner.getTransitionLog().filter((e) => e.after === 'revoked')).toHaveLength(1);
+  });
+
+  it('reports revoked: true, without throwing, when the process already exited on its own before revoke() is called', async () => {
+    runner.start(SCRIPT_PATH, ledgerPath, 20, 999_000, false);
+    const pid = runner.getPid()!;
+    await sleep(150);
+
+    // Simulate a crash/normal-exit the runner didn't cause: kill the group
+    // out from under it before revoke() ever calls process.kill() itself.
+    process.kill(-pid, 'SIGKILL');
+    await sleep(50);
+    expect(isAlive(pid)).toBe(false);
+
+    const result = await runner.revoke('operator requested stop, but it was already gone');
+    expect(result).toMatchObject({ revoked: true });
   });
 });
