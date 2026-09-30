@@ -25,6 +25,12 @@ Most state-bug postmortems trace back to one of two root causes. **Write authori
 
 A control surface is only as split as its consumer. If several writers fan out into separate fragment files but the live reader still reads one file, the split changed nothing except where the collision hides. **Before designing any registry, allowlist, manifest, or config surface with more than one producer, name its reader first** (the file and line that actually consumes it), confirm the reader reads the form you write, and record the command that confirmed it. No reader means the artifact is decorative, and any metric built on it is a proxy with no predicate. Where the reader is single-file, the writer must be single-owner; no architecture removes that constraint.
 
+## A second corollary: the Revocation Path
+
+Rule 9 proves a transition was recorded, not that an agent's access could be stopped. Any agent with live external-write access (posting, sending, committing, calling a paid API) needs a revocation path: a mechanism a test actually runs and confirms terminates that access. A wall-clock timeout is not one; it bounds duration, not behavior, and a bare `SIGTERM` with no escalation leaves a hung or misbehaving process free to keep writing after the log says it stopped.
+
+Test this the way you test rule 10's fallback: run it and watch the process die, not just the log entry appear. `example/revocation-path` in this repository is a runnable pair showing the gap and the fix.
+
 ## How to adopt it
 
 1. Put this file in the repository root and reference it from whatever instructions your agents read (`AGENTS.md`, `CLAUDE.md`, `.cursorrules`, or equivalent).
