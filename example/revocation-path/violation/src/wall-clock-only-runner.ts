@@ -6,8 +6,8 @@ import { RunState, TransitionLogEntry } from './types';
  * run is elapsed wall-clock time. Nothing here ever looks for an external
  * "stop now" signal while the child is running: there is no on-demand
  * trigger of any kind, and the timeout's own kill is a plain SIGTERM with no
- * escalation. This mirrors the real nexus-daily-audit defect: a bare
- * `timeout "${AUDIT_CLAUDE_TIMEOUT}" "$CLAUDE_BIN" ...`, no `--kill-after`.
+ * escalation. This mirrors a common shape in the wild: a bare `timeout`
+ * wrapper around a long-running command, with no `--kill-after`.
  *
  * The transition log below is CHOP-9 compliant on its own terms: every
  * entry carries before/after/actor/timestamp. That compliance is exactly

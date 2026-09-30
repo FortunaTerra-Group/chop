@@ -55,6 +55,9 @@ npm run test:fixed       # RUN 2: the fix, verified
 npm test                 # both suites together
 ```
 
+(POSIX shell; on Windows use Git Bash, WSL, or drop the trailing `#` comments and run each
+`npm` command on its own line in `cmd.exe`.)
+
 ## What each run shows
 
 - [`RUN-1-violation.md`](./RUN-1-violation.md): a `timed_out` transition gets logged correctly,
